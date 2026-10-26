@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Unified MediAlert care history">
+  <title>MediAlert | History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="dashboard.css">
+  <style>
+    .history-page { max-width: 1080px; margin: 0 auto; padding:42px clamp(18px,4vw,58px) 60px; }.history-header { margin-bottom:25px; }.history-header h1 { font-size:clamp(30px,4vw,44px); }.history-header p:not(.eyebrow) { margin:10px 0 0; color:var(--secondary); }.search-panel { display:flex; align-items:center; gap:12px; margin-bottom:14px; padding:8px 13px; border:1px solid var(--line); border-radius:14px; background:var(--white); box-shadow:var(--shadow-card); }.search-panel svg { width:19px; color:var(--muted); }.search-panel input { width:100%; height:40px; border:0; outline:0; color:var(--ink); background:transparent; }.filter-bar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:25px; }.filter-button { min-height:38px; padding:0 13px; border:1px solid var(--line); border-radius:11px; color:var(--secondary); font-size:11px; font-weight:700; background:var(--white); cursor:pointer; }.filter-button.is-active,.filter-button:hover { border-color:var(--deep-teal); color:var(--white); background:var(--deep-teal); }.timeline { position:relative; display:grid; gap:17px; padding-left:27px; }.timeline::before { position:absolute; top:8px; bottom:8px; left:7px; width:1px; background:#cde2df; content:""; }.timeline-item { position:relative; padding:19px 20px; border:1px solid rgba(220,233,231,.9); border-radius:var(--radius-card); background:var(--white); box-shadow:var(--shadow-card); }.timeline-dot { position:absolute; top:25px; left:-26px; width:13px; height:13px; border:3px solid var(--surface); border-radius:50%; background:var(--teal-accent); box-shadow:0 0 0 1px #a9d9d3; }.timeline-item__top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }.timeline-type { display:inline-flex; padding:5px 8px; border-radius:8px; color:var(--teal-accent); font-size:10px; font-weight:700; background:var(--mint); }.timeline-item h2 { margin:10px 0 0; font-size:17px; }.timeline-item p { margin:5px 0 0; color:var(--secondary); font-size:12px; }.timeline-date { color:var(--muted); font-size:10px; white-space:nowrap; }.timeline-empty { padding:45px 20px; border:1px dashed #c8e1dd; border-radius:var(--radius-card); text-align:center; background:rgba(255,255,255,.72); }.timeline-empty strong,.timeline-empty small { display:block; }.timeline-empty strong { font-size:16px; }.timeline-empty small { margin-top:7px; color:var(--secondary); font-size:12px; }.history-count { margin:0 0 16px; color:var(--secondary); font-size:11px; }@media(max-width:600px){.timeline-item__top{display:block}.timeline-date{display:block;margin-top:8px}.timeline{padding-left:23px}.timeline-dot{left:-22px}}
+  </style>
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="dashboard.html" aria-label="MediAlert dashboard"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 39S7 29.2 7 17.8C7 11.8 11.3 8 16.7 8c3.4 0 5.9 1.7 7.3 4.1C25.4 9.7 27.9 8 31.3 8 36.7 8 41 11.8 41 17.8 41 29.2 24 39 24 39Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M16 23.5h5l2-6 3.2 12 2-6H34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/></svg></span><span class="brand__name">MediAlert</span></a>
+      <nav class="sidebar__nav">
+        <a class="nav-link" href="dashboard.html"><span aria-hidden="true">🏠</span> Overview</a>
+        <a class="nav-link" href="dashboard.html#calendar-section"><span aria-hidden="true">📅</span> Health Calendar</a>
+        <a class="nav-link" href="medicines.html"><span aria-hidden="true">💊</span> Medicines</a>
+        <a class="nav-link" href="appointments.html"><span aria-hidden="true">🩺</span> Appointments</a>
+        <a class="nav-link" href="tests.html"><span aria-hidden="true">🧪</span> Medical Tests</a>
+        <a class="nav-link" href="medical-reports.html"><span aria-hidden="true">📄</span> Medical Reports</a>
+        <a class="nav-link" href="prescriptions.html"><span aria-hidden="true">💊</span> Prescriptions</a>
+        <a class="nav-link" href="health-records.html"><span aria-hidden="true">❤️</span> Health Records</a>
+        <a class="nav-link" href="profile.html"><span aria-hidden="true">⚙️</span> Profile & PIN</a>
+      </nav>
+      <div class="sidebar__footer">
+        <button class="logout-link" type="button" data-action="logout">
+          <span aria-hidden="true">&larr;</span> Sign Out
+        </button>
+        <a class="profile-mini" href="profile.html">
+          <span class="avatar avatar--small" id="sidebar-avatar" aria-hidden="true">👤</span>
+          <span><strong id="sidebar-name">Patient</strong><small id="sidebar-role-label">Active Account</small></span>
+          <span class="profile-mini__arrow" aria-hidden="true">&gt;</span>
+        </a>
+      </div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+        <div class="topbar__context"><span class="topbar__kicker">Unified Timeline</span><span class="topbar__date">Your care activity in one place</span></div>
+        <div class="topbar__actions">
+          <button class="icon-button notification-button" id="notification-button" type="button" title="Reminders" aria-label="Notifications">
+            <span aria-hidden="true">🔔</span>
+            <b id="notification-count" style="display:none">0</b>
+          </button>
+          <a class="avatar" id="header-avatar" href="profile.html" aria-label="Open profile">👤</a>
+        </div>
+      </header>
+      <section class="history-page" aria-labelledby="history-title">
+        <div class="history-header"><p class="eyebrow">Care History</p><h1 id="history-title">History</h1><p>Review medicines, visits, tests, prescriptions, and health records together.</p></div>
+        <label class="search-panel" for="history-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg><input id="history-search" type="search" placeholder="Search your care history" autocomplete="off"></label>
+        <div class="filter-bar" aria-label="History filters">
+          <button class="filter-button is-active" data-filter="all" type="button">All</button>
+          <button class="filter-button" data-filter="medicines" type="button">Medicines</button>
+          <button class="filter-button" data-filter="appointments" type="button">Appointments</button>
+          <button class="filter-button" data-filter="reports" type="button">Reports</button>
+          <button class="filter-button" data-filter="records" type="button">Health Records</button>
+        </div>
+        <p class="history-count" id="history-count" aria-live="polite"></p>
+        <div class="timeline" id="history-timeline"></div>
+      </section>
+    </main>
+  </div>
+  <script src="userStorage.js"></script>
+  <script src="notificationService.js"></script>
+  <script src="history.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create your MediAlert account">
+  <title>MediAlert | Account Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .pin-setup-box {
+      margin: 18px 0;
+      padding: 16px;
+      border: 1px solid var(--border-lavender);
+      border-radius: 14px;
+      background: #faf8ff;
+    }
+    .pin-setup-box h3 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--secondary-purple);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .pin-setup-box p {
+      margin: 0 0 12px;
+      font-size: 11px;
+      color: var(--text-muted-purple);
+    }
+    .pin-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .pin-row input {
+      letter-spacing: 0.25em;
+      text-align: center;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <main class="login-shell">
+    <section class="brand-panel" aria-labelledby="brand-title">
+      <div class="brand-panel__content">
+        <a class="brand" href="index.html" aria-label="MediAlert home">
+          <span class="brand__mark" aria-hidden="true">+</span>
+          <span class="brand__name">MediAlert</span>
+        </a>
+        <div class="brand-panel__copy">
+          <p class="eyebrow" id="signup-role-eyebrow">Patient & Guardian Account</p>
+          <h1 id="brand-title">A healthier day<br><em>starts here.</em></h1>
+          <p class="brand-panel__description" id="signup-brand-description">Complete healthcare control for you and your loved ones in one unified medical workspace.</p>
+        </div>
+        <ul class="feature-list" aria-label="MediAlert care essentials">
+          <li><span class="feature-list__icon" aria-hidden="true">01</span><span>Medication reminders & dose logging</span></li>
+          <li><span class="feature-list__icon" aria-hidden="true">02</span><span>Shared Health Calendar with your Doctor</span></li>
+          <li><span class="feature-list__icon" aria-hidden="true">03</span><span>Secure PDF diagnostic report storage</span></li>
+        </ul>
+      </div>
+      <p class="brand-panel__footer">MediAlert <span aria-hidden="true">/</span> Your health. Our reminder.</p>
+    </section>
+
+    <section class="auth-panel" aria-labelledby="signup-title">
+      <div class="auth-panel__topline">
+        <span class="secure-label" id="signup-role-label">Patient / Guardian Registration</span>
+        <a class="help-button" href="index.html">Log in</a>
+      </div>
+
+      <div class="auth-card auth-card--signup">
+        <div class="auth-card__intro">
+          <p class="eyebrow">Welcome to MediAlert</p>
+          <h2 id="signup-title">Create your account</h2>
+          <p id="signup-intro-copy">Register your personal Patient & Guardian profile.</p>
+        </div>
+
+        <form id="signup-form" novalidate>
+          <div class="field-group">
+            <label for="full-name">Full name</label>
+            <div class="input-wrap">
+              <input id="full-name" name="name" type="text" autocomplete="name" placeholder="e.g. Jane Smith" aria-describedby="name-error" required>
+            </div>
+            <p class="field-error" id="name-error" role="alert"></p>
+          </div>
+
+          <div class="field-group">
+            <label for="signup-email">Email address</label>
+            <div class="input-wrap">
+              <input id="signup-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="signup-email-error" required>
+            </div>
+            <p class="field-error" id="signup-email-error" role="alert"></p>
+          </div>
+
+          <div class="field-group">
+            <label for="signup-password">Password</label>
+            <div class="input-wrap">
+              <input id="signup-password" name="password" type="password" autocomplete="new-password" placeholder="Create a secure password" aria-describedby="password-requirements password-strength password-error" required>
+              <button class="password-toggle" id="signup-password-toggle" type="button" aria-label="Show password">Show</button>
+            </div>
+            <p class="password-requirements" id="password-requirements">At least 8 characters with uppercase, lowercase, number, and special character.</p>
+            <p class="password-strength" id="password-strength" aria-live="polite">Strength: <strong>Not entered</strong></p>
+            <p class="field-error" id="password-error" role="alert"></p>
+          </div>
+
+          <div class="field-group">
+            <label for="confirm-password">Confirm password</label>
+            <div class="input-wrap">
+              <input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Re-enter your password" aria-describedby="confirm-error" required>
+            </div>
+            <p class="field-error" id="confirm-error" role="alert"></p>
+          </div>
+
+          <!-- OPTIONAL QUICK PIN SETUP -->
+          <div class="pin-setup-box" id="pin-setup-box">
+            <h3>
+              <span>Quick PIN (Optional)</span>
+              <span style="font-size: 10px; font-weight: normal; color: var(--teal-accent)">4–6 digits</span>
+            </h3>
+            <p>Set a Quick PIN for fast login from trusted personal devices.</p>
+            <div class="pin-row">
+              <div class="input-wrap">
+                <input id="setup-pin" name="pin" type="password" inputmode="numeric" maxlength="6" placeholder="PIN (4–6 digits)" autocomplete="off">
+              </div>
+              <div class="input-wrap">
+                <input id="setup-pin-confirm" name="pinConfirm" type="password" inputmode="numeric" maxlength="6" placeholder="Confirm PIN" autocomplete="off">
+              </div>
+            </div>
+            <p class="field-error" id="pin-setup-error" role="alert"></p>
+          </div>
+
+          <button class="submit-button" id="signup-submit-btn" type="submit">
+            <span>Create Account</span>
+            <span aria-hidden="true">&rarr;</span>
+          </button>
+          <p class="form-status" id="signup-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <p class="signup-prompt">Already have an account? <a href="index.html">Log in</a></p>
+      </div>
+
+      <p class="legal-copy" id="signup-legal-copy">Your account receives Patient / Guardian access with integrated doctor sharing.</p>
+    </section>
+  </main>
+
+  <script src="userStorage.js"></script>
+  <script src="signup.js" defer></script>
+</body>
+</html>

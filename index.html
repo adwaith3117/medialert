@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MediAlert — Smart medicine reminders, health records, and clinical coordination.">
+  <title>MediAlert — Your Health, Our Reminder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-purple: #7448ee;
+      --secondary-purple: #24184f;
+      --accent-pink: #ed55a9;
+      --soft-lavender: #f0ebff;
+      --soft-pink: #fff0f8;
+      --background-white: #ffffff;
+      --background-soft: #fbf9ff;
+      --ink: #20144f;
+      --text-muted: #6e638d;
+      --text-light: #968bab;
+      --line: #e6dffa;
+      --line-subtle: #f0ecfa;
+      --gradient-brand: linear-gradient(105deg, #603ce6 0%, #bd52cf 60%, #e6459f 100%);
+      --gradient-text: linear-gradient(90deg, #7448ee 0%, #e249a4 100%);
+      --shadow-card: 0 20px 60px rgba(45, 25, 95, 0.08);
+      --shadow-btn: 0 8px 24px rgba(116, 72, 238, 0.28);
+      --radius-card: 24px;
+      --radius-pill: 100px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+      background-color: var(--background-soft);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, textarea {
+      font-family: inherit;
+    }
+
+    /* ============================================================
+       TOP NAVBAR
+    ============================================================ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      height: 76px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(18px, 4vw, 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--gradient-brand);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 18px rgba(116, 72, 238, 0.3);
+      color: #fff;
+    }
+
+    .brand-icon-box svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-text-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--secondary-purple);
+      line-height: 1.1;
+    }
+
+    .brand-tagline {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .nav-item-link {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 150ms ease, background 150ms ease;
+    }
+
+    .nav-item-link:hover {
+      color: var(--ink);
+      background: var(--soft-lavender);
+    }
+
+    .nav-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-login-nav {
+      padding: 10px 22px;
+      border-radius: 10px;
+      border: 1.5px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .btn-login-nav:hover {
+      border-color: var(--primary-purple);
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+    }
+
+    .btn-get-started {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      border: none;
+      background: var(--gradient-brand);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 160ms ease, opacity 160ms ease;
+    }
+
+    .btn-get-started:hover {
+      opacity: 0.93;
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       HERO SECTION WITH SIDE-BY-SIDE LOGIN CARD
+    ============================================================ */
+    .hero-section {
+      background: linear-gradient(135deg, #ffffff 0%, #faf6ff 60%, #fff0f7 100%);
+      padding: clamp(40px, 6vh, 72px) clamp(18px, 4vw, 40px);
+      border-bottom: 1px solid var(--line-subtle);
+    }
+
+    .hero-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(360px, 1.15fr) minmax(400px, 0.95fr);
+      gap: clamp(32px, 4vw, 64px);
+      align-items: center;
+    }
+
+    /* LEFT HERO COPY */
+    .hero-left-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .pill-reminder-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .hero-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(38px, 4.6vw, 58px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+
+    .hero-title-accent {
+      display: block;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 15.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+
+    .hero-stats-row {
+      display: flex;
+      align-items: center;
+      gap: clamp(20px, 3.5vw, 40px);
+      padding-top: 24px;
+      border-top: 1px solid var(--line-subtle);
+      margin-bottom: 30px;
+    }
+
+    .stat-item strong {
+      display: block;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .stat-item span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .features-mini-list {
+      display: grid;
+      gap: 16px;
+      max-width: 460px;
+    }
+
+    .mini-feature-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mini-feature-item .num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    .mini-feature-item strong {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .mini-feature-item p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* RIGHT SIDE: EMBEDDED LOGIN CARD */
+    .hero-right-card-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 460px;
+      background: #ffffff;
+      border-radius: 28px;
+      border: 1px solid #ebe4f9;
+      box-shadow: var(--shadow-card);
+      padding: clamp(26px, 3.5vw, 38px) clamp(22px, 3vw, 34px);
+    }
+
+    .card-title-head {
+      margin-bottom: 18px;
+    }
+
+    .card-title-head h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .card-title-head .card-subtitle {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-top: 4px;
+      display: block;
+    }
+
+    .card-title-head .card-subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* Role Switcher Tabs */
+    .role-segmented-box {
+      background: var(--soft-lavender);
+      border-radius: 12px;
+      padding: 4px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+
+    .role-btn-tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 0;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .role-btn-tab.is-active {
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(36, 24, 79, 0.08);
+    }
+
+    /* Form Fields */
+    .form-group-block {
+      margin-bottom: 14px;
+    }
+
+    .form-group-block label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .input-shell-wrap {
+      position: relative;
+    }
+
+    .input-shell-wrap input {
+      width: 100%;
+      height: 46px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--ink);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .input-shell-wrap input:focus {
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 4px rgba(116, 72, 238, 0.12);
+    }
+
+    .password-eye-btn {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 4px;
+    }
+
+    .password-eye-btn:hover {
+      color: var(--primary-purple);
+    }
+
+    .field-err-msg {
+      min-height: 14px;
+      font-size: 11px;
+      color: #d93838;
+      margin-top: 3px;
+    }
+
+    /* Remember & Forgot */
+    .row-meta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-label input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary-purple);
+    }
+
+    .btn-forgot-pw {
+      border: none;
+      background: transparent;
+      color: var(--primary-purple);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-forgot-pw:hover {
+      text-decoration: underline;
+    }
+
+    /* Sign In Button */
+    .btn-signin-full {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      background: var(--gradient-brand);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 160ms ease;
+    }
+
+    .btn-signin-full:hover {
+      opacity: 0.94;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 28px rgba(116, 72, 238, 0.35);
+    }
+
+    .btn-signin-full.is-loading {
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    /* Divider */
+    .divider-text-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0 14px;
+      color: var(--text-light);
+      font-size: 11px;
+    }
+
+    .divider-text-row::before, .divider-text-row::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* Google Button */
+    .btn-google-social {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 150ms ease;
+    }
+
+    .btn-google-social:hover {
+      background: #fbf9ff;
+      border-color: #d8cefa;
+    }
+
+    .google-logo-icon {
+      width: 17px;
+      height: 17px;
+    }
+
+    /* Signup link */
+    .create-acc-row {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .create-acc-row a {
+      color: var(--primary-purple);
+      font-weight: 700;
+    }
+
+    .create-acc-row a:hover {
+      text-decoration: underline;
+    }
+
+    /* Demo Evaluation Box */
+    .demo-credentials-card {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 14px;
+      background: #fbf9ff;
+      border: 1px solid #e7def7;
+    }
+
+    .demo-card-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .demo-chips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-demo-chip {
+      padding: 7px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 140ms ease;
+      text-align: center;
+    }
+
+    .btn-demo-chip:hover {
+      border-color: var(--primary-purple);
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+    }
+
+    /* Quick PIN section */
+    .pin-auth-drawer {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      text-align: center;
+    }
+
+    .btn-switch-mode {
+      background: transparent;
+      border: none;
+      color: var(--primary-purple);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-switch-mode:hover {
+      text-decoration: underline;
+    }
+
+    .pin-form-wrap {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .pin-form-wrap.is-visible {
+      display: block;
+    }
+
+    .pin-input-field {
+      width: 100%;
+      height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.4em;
+      outline: none;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .pin-input-field:focus {
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 4px rgba(116, 72, 238, 0.12);
+    }
+
+    .btn-pin-submit-action {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--primary-purple);
+      border-radius: 12px;
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .btn-pin-submit-action:hover {
+      background: #e4dafc;
+    }
+
+    .status-feedback-text {
+      min-height: 16px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #199567;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       COMPREHENSIVE HEALTH SUITE (FEATURES)
+    ============================================================ */
+    .section-wrap {
+      padding: clamp(64px, 8vh, 90px) clamp(18px, 4vw, 40px);
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-heading-center {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 52px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .pill-badge--green {
+      background: #e8f9f3;
+      color: #059669;
+    }
+
+    .section-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(30px, 3.6vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .features-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .feature-box {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 30px 24px;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card);
+      border-color: var(--primary-purple);
+    }
+
+    .feature-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .feature-box h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .feature-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       HOW IT WORKS
+    ============================================================ */
+    .how-it-works-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow-card);
+      padding: clamp(36px, 5vw, 64px) clamp(24px, 4vw, 56px);
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(20px, 3vw, 36px);
+      margin-top: 48px;
+    }
+
+    .step-item-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-number {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .step-number--c1 { color: #6366f1; }
+    .step-number--c2 { color: #ec4899; }
+    .step-number--c3 { color: #0284c7; }
+    .step-number--c4 { color: #10b981; }
+
+    .step-item-col h4 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .step-item-col p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       ABOUT / MISSION
+    ============================================================ */
+    .mission-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: clamp(36px, 5vw, 64px);
+      align-items: center;
+    }
+
+    .mission-text-block p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+
+    .mission-buttons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      padding: 13px 28px;
+      border-radius: 12px;
+      border: none;
+      background: var(--gradient-brand);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: all 160ms ease;
+    }
+
+    .btn-hero-primary:hover {
+      opacity: 0.94;
+      transform: translateY(-2px);
+    }
+
+    .btn-hero-secondary {
+      padding: 13px 28px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .btn-hero-secondary:hover {
+      border-color: var(--primary-purple);
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+    }
+
+    .mission-display-card {
+      background: linear-gradient(145deg, #f4efff 0%, #fff1f8 100%);
+      border: 1px solid #ebdcf5;
+      border-radius: 24px;
+      padding: clamp(36px, 4vw, 50px) 32px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+
+    .mission-heart-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: inline-block;
+      filter: drop-shadow(0 6px 16px rgba(237, 85, 169, 0.3));
+    }
+
+    .mission-display-card h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--secondary-purple);
+      margin-bottom: 8px;
+    }
+
+    .mission-quote {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-bottom: 12px;
+    }
+
+    .mission-display-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    /* ============================================================
+       CONTACT
+    ============================================================ */
+    .contact-card-wrap {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow-card);
+      padding: clamp(36px, 5vw, 64px) clamp(24px, 4vw, 56px);
+    }
+
+    .contact-form {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .form-group-field {
+      margin-bottom: 18px;
+    }
+
+    .form-group-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .form-input-box {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fdfcff;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+      transition: all 160ms ease;
+    }
+
+    .form-input-box:focus {
+      border-color: var(--primary-purple);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(116, 72, 238, 0.12);
+    }
+
+    .form-textarea-box {
+      width: 100%;
+      min-height: 110px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fdfcff;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+      resize: vertical;
+      transition: all 160ms ease;
+    }
+
+    .form-textarea-box:focus {
+      border-color: var(--primary-purple);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(116, 72, 238, 0.12);
+    }
+
+    .btn-submit-inquiry {
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 12px;
+      background: var(--gradient-brand);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: all 160ms ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .btn-submit-inquiry:hover {
+      opacity: 0.94;
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .landing-footer {
+      background: #ffffff;
+      border-top: 1px solid var(--line-subtle);
+      padding: 60px 20px 40px;
+      text-align: center;
+    }
+
+    .footer-brand-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary-purple);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .footer-quote-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 540px;
+      margin: 0 auto 16px;
+      line-height: 1.6;
+    }
+
+    .footer-copyright {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+      }
+      .features-grid-8 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .steps-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 860px) {
+      .nav-menu { display: none; }
+      .mission-row { grid-template-columns: 1fr; }
+      .mission-text-block { text-align: center; }
+      .mission-buttons { justify-content: center; }
+    }
+
+    @media (max-width: 600px) {
+      .features-grid-8 { grid-template-columns: 1fr; }
+      .steps-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP NAVBAR
+  ============================================================ -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a class="brand-link" href="#home">
+        <div class="brand-icon-box">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M24 39S7 29.2 7 17.8C7 11.8 11.3 8 16.7 8c3.4 0 5.9 1.7 7.3 4.1C25.4 9.7 27.9 8 31.3 8 36.7 8 41 11.8 41 17.8 41 29.2 24 39 24 39Z"/>
+            <path d="M16 23.5h5l2-6 3.2 12 2-6H34" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text-wrap">
+          <span class="brand-title">MEDIALERT</span>
+          <span class="brand-tagline">Your Health, Our Reminder</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a class="nav-item-link" href="#home">Home</a></li>
+          <li><a class="nav-item-link" href="#features">Features</a></li>
+          <li><a class="nav-item-link" href="#how-it-works">How It Works</a></li>
+          <li><a class="nav-item-link" href="#about">About</a></li>
+          <li><a class="nav-item-link" href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-cta-group">
+        <button class="btn-login-nav" type="button" onclick="document.getElementById('email')?.focus(); window.scrollTo({top: 0, behavior: 'smooth'});">Login</button>
+        <button class="btn-get-started" type="button" onclick="window.location.href='signup.html'">
+          <span>Get Started</span>
+          <span aria-hidden="true">&rarr;</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO SECTION WITH SIDE-BY-SIDE LOGIN CARD
+  ============================================================ -->
+  <section class="hero-section" id="home">
+    <div class="hero-container">
+      <!-- LEFT HERO COPY -->
+      <div class="hero-left-content">
+        <div class="pill-reminder-tag">✦ SMALL REMINDER. A HEALTHIER YOU.</div>
+
+        <h1 class="hero-title">
+          Small reminder.
+          <span class="hero-title-accent">A healthier you.</span>
+        </h1>
+
+        <p class="hero-description">
+          MediAlert helps you stay on track with your medicines, appointments, and health goals — because your health matters.
+        </p>
+
+        <!-- Stats row -->
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <strong>30–Min</strong>
+            <span>Advance Warnings</span>
+          </div>
+          <div class="stat-item">
+            <strong>100%</strong>
+            <span>Calendar Sync</span>
+          </div>
+          <div class="stat-item">
+            <strong>Encrypted</strong>
+            <span>Clinical Dossier</span>
+          </div>
+        </div>
+
+        <!-- 3 Feature Highlights -->
+        <div class="features-mini-list">
+          <div class="mini-feature-item">
+            <span class="num">01</span>
+            <strong>Smart 30–Minute Reminders</strong>
+            <p>Advance notifications and alarm alerts ensure you never miss critical medications.</p>
+          </div>
+          <div class="mini-feature-item">
+            <span class="num">02</span>
+            <strong>Central Synchronized Calendar</strong>
+            <p>Visits, reports, and prescriptions automatically populate your color-coded timeline.</p>
+          </div>
+          <div class="mini-feature-item">
+            <span class="num">03</span>
+            <strong>Secure Doctor Connectivity</strong>
+            <p>Connect authorized clinical providers for real-time compliance oversight.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: LOGIN CARD -->
+      <div class="hero-right-card-wrap">
+        <div class="login-card">
+          <div class="card-title-head">
+            <h2>Welcome Back</h2>
+            <span class="card-subtitle">Sign in to MediAlert</span>
+            <span class="card-subtext">Your health journey continues here.</span>
+          </div>
+
+          <!-- Role Segmented Switcher -->
+          <div class="role-segmented-box" role="tablist">
+            <button class="role-btn-tab is-active" id="tab-patient" type="button" role="tab" aria-selected="true" onclick="selectRoleTab('patient')">
+              <span>👤</span>
+              <span>Patient / Guardian</span>
+            </button>
+            <button class="role-btn-tab" id="tab-doctor" type="button" role="tab" aria-selected="false" onclick="selectRoleTab('doctor')">
+              <span>🩺</span>
+              <span>Doctor</span>
+            </button>
+          </div>
+
+          <!-- Login Form (Email & Password) -->
+          <form id="login-form" novalidate>
+            <div class="form-group-block" id="email-field-group">
+              <label for="email">Email Address</label>
+              <div class="input-shell-wrap">
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="ananya@medialert.com" required>
+              </div>
+              <p class="field-err-msg" id="email-error" role="alert"></p>
+            </div>
+
+            <div class="form-group-block" id="password-field-group">
+              <label for="password">Password</label>
+              <div class="input-shell-wrap">
+                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••••" required>
+                <button class="password-eye-btn" id="password-toggle" type="button" aria-label="Toggle password visibility">👁️</button>
+              </div>
+              <p class="field-err-msg" id="password-error" role="alert"></p>
+            </div>
+
+            <div class="row-meta-actions">
+              <label class="remember-label">
+                <input id="remember-me" name="remember-me" type="checkbox" checked>
+                <span>Remember me</span>
+              </label>
+              <button class="btn-forgot-pw" type="button" id="forgot-password">Forgot Password?</button>
+            </div>
+
+            <button class="btn-signin-full" id="password-login-btn" type="submit">
+              <span>Sign In</span>
+              <span aria-hidden="true">&rarr;</span>
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="divider-text-row">
+            <span>Or sign in with</span>
+          </div>
+
+          <!-- Google Sign in Button -->
+          <button class="btn-google-social" type="button" onclick="handleGoogleSignIn()">
+            <svg class="google-logo-icon" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.37 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27a7.22 7.22 0 0 1 0-4.54V6.58H1.26a11.97 11.97 0 0 0 0 10.84l4.02-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.27 2.63 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span>Sign in with Google</span>
+          </button>
+
+          <!-- Sign up link -->
+          <p class="create-acc-row">
+            Don't have an account? <a id="signup-link" href="signup.html">Create Account</a>
+          </p>
+
+          <!-- Quick PIN Drawer toggle -->
+          <div class="pin-auth-drawer">
+            <button class="btn-switch-mode" type="button" id="toggle-pin-drawer" onclick="togglePinDrawer()">
+              🔑 Prefer Quick PIN Login?
+            </button>
+
+            <div class="pin-form-wrap" id="pin-form-wrap">
+              <form id="pin-form" novalidate style="margin-top:10px;">
+                <input class="pin-input-field" id="quick-pin" name="quickPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="• • • •" autocomplete="off">
+                <button class="btn-pin-submit-action" id="pin-login-btn" type="submit">
+                  <span>Unlock with Quick PIN &rarr;</span>
+                </button>
+                <p class="field-err-msg" id="pin-error" role="alert"></p>
+              </form>
+            </div>
+          </div>
+
+          <p class="status-feedback-text" id="form-status" role="status" aria-live="polite"></p>
+
+          <!-- 1-Click Demo Evaluation Box -->
+          <div class="demo-credentials-card">
+            <div class="demo-card-title">
+              <span>⚡</span>
+              <span>1-Click Demo Evaluation Credentials</span>
+            </div>
+            <div class="demo-chips-grid">
+              <button class="btn-demo-chip" type="button" onclick="selectRoleTab('patient'); fillCredentials('ananya@medialert.com', 'MediAlert@2026', '1234')">
+                <span>👤</span>
+                <span>Ananya (Patient)</span>
+              </button>
+              <button class="btn-demo-chip" type="button" onclick="selectRoleTab('doctor'); fillCredentials('doctor@medialert.com', 'MediAlert@2026')">
+                <span>🩺</span>
+                <span>Dr. Sarah Lee (Cardiology)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       COMPREHENSIVE HEALTH SUITE (FEATURES)
+  ============================================================ -->
+  <section class="section-wrap" id="features">
+    <div class="section-heading-center">
+      <div class="pill-badge">COMPREHENSIVE HEALTH SUITE</div>
+      <h2 class="section-title">Everything you need for complete<br>health adherence</h2>
+      <p class="section-subtitle">A modern healthcare SaaS built to empower patients, guardians, and clinical providers with proactive care.</p>
+    </div>
+
+    <div class="features-grid-8">
+      <!-- 1. Smart Medicine Reminders -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#fff7ed; color:#ea580c;">🔔</div>
+        <h3>Smart Medicine Reminders</h3>
+        <p>30–minute advance warnings, dosage-time alarms, and continuous repeated reminders until doses are marked TAKEN.</p>
+      </div>
+
+      <!-- 2. Medical History -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#fdf2f8; color:#db2777;">📋</div>
+        <h3>Medical History</h3>
+        <p>Chronological record of conditions, past illnesses, surgical procedures, drug allergies, and family health factors.</p>
+      </div>
+
+      <!-- 3. Prescription Management -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#fff1f2; color:#e11d48;">💊</div>
+        <h3>Prescription Management</h3>
+        <p>Digitize prescription orders with diagnosis, dose instructions, doctor details, and downloadable Rx files.</p>
+      </div>
+
+      <!-- 4. Medical Reports -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#f0fdfa; color:#0d9488;">📊</div>
+        <h3>Medical Reports</h3>
+        <p>Store pathology tests, imaging, and blood panels with instant calendar date highlighting and secure downloads.</p>
+      </div>
+
+      <!-- 5. Doctor Connectivity -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#eff6ff; color:#2563eb;">🩺</div>
+        <h3>Doctor Connectivity</h3>
+        <p>Link authorized doctors via verified Doctor ID (e.g. MED-DR-0001) for strict clinical read-only oversight.</p>
+      </div>
+
+      <!-- 6. Appointment Management -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#ecfdf5; color:#059669;">📅</div>
+        <h3>Appointment Management</h3>
+        <p>Book, reschedule, and track clinical visits with automatic multi-channel reminders and instant calendar sync.</p>
+      </div>
+
+      <!-- 7. Health Monitoring -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#faf5ff; color:#9333ea;">📈</div>
+        <h3>Health Monitoring</h3>
+        <p>Log BP, Heart Rate, Glucose, Weight, Temp, and SpO2 with interactive visual trend charts and clinical ranges.</p>
+      </div>
+
+      <!-- 8. Health Calendar -->
+      <div class="feature-box">
+        <div class="feature-icon-wrapper" style="background:#eef2ff; color:#4f46e5;">🗓️</div>
+        <h3>Health Calendar</h3>
+        <p>Interactive synchronized hub color-coding visits (🔵), meds (🟢), reports (🟠), Rx (🟣), and emergencies (🔴).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS SECTION (#how-it-works)
+  ============================================================ -->
+  <section class="section-wrap" id="how-it-works" style="padding-top:0;">
+    <div class="how-it-works-card">
+      <div class="section-heading-center" style="margin-bottom:0;">
+        <div class="pill-badge pill-badge--green">PROACTIVE HEALTH JOURNEY</div>
+        <h2 class="section-title">How MediAlert Works</h2>
+        <p class="section-subtitle">Four simple steps towards reliable medication compliance and clinical clarity.</p>
+      </div>
+
+      <div class="steps-container">
+        <!-- 01 -->
+        <div class="step-item-col">
+          <div class="step-number step-number--c1">01</div>
+          <h4>Register &amp; Add Regimens</h4>
+          <p>Create your account to receive a unique Patient ID ('MED-PT-0001'). Enter prescribed medicines and dosage timings.</p>
+        </div>
+
+        <!-- 02 -->
+        <div class="step-item-col">
+          <div class="step-number step-number--c2">02</div>
+          <h4>30–Minute Alerts &amp; Alarms</h4>
+          <p>Receive proactive 30-minute advance warnings followed by dosage-time alarms and repeated reminder cycles until taken.</p>
+        </div>
+
+        <!-- 03 -->
+        <div class="step-item-col">
+          <div class="step-number step-number--c3">03</div>
+          <h4>Synchronized Health Calendar</h4>
+          <p>Every doctor visit, medical report, and prescription automatically synchronizes into a color-coded interactive calendar.</p>
+        </div>
+
+        <!-- 04 -->
+        <div class="step-item-col">
+          <div class="step-number step-number--c4">04</div>
+          <h4>Clinical Doctor Oversight</h4>
+          <p>Authorized doctors view your complete medical timeline in read-only mode, eliminating forgotten paper slips.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT / MISSION SECTION (#about)
+  ============================================================ -->
+  <section class="section-wrap" id="about">
+    <div class="mission-row">
+      <div class="mission-text-block">
+        <div class="pill-badge">OUR MISSION</div>
+        <h2 class="section-title">Bridging the gap in medication adherence</h2>
+        <p>More than 50% of chronic disease complications stem from missed medications and delayed clinical follow-ups. MediAlert was engineered from the ground up to solve this challenge through intelligent, persistent reminders and centralized clinical records.</p>
+        <p>With MediAlert, patients never wonder when their next dose is due, caregivers enjoy peace of mind, and physicians inspect complete adherence logs with zero data ambiguity.</p>
+        <div class="mission-buttons">
+          <button class="btn-hero-primary" type="button" onclick="window.location.href='signup.html'">Join MediAlert Today</button>
+          <button class="btn-hero-secondary" type="button" onclick="document.getElementById('email')?.focus(); window.scrollTo({top: 0, behavior: 'smooth'});">Explore Demo</button>
+        </div>
+      </div>
+
+      <div class="mission-display-card">
+        <div class="mission-heart-icon">❤️</div>
+        <h3>MEDIALERT</h3>
+        <p class="mission-quote">“Small reminder. A healthier you.”</p>
+        <p>Your health, our reminder. Dedicated to precision scheduling, clinical synchronization, and patient wellness.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT SECTION (#contact)
+  ============================================================ -->
+  <section class="section-wrap" id="contact" style="padding-top:0;">
+    <div class="contact-card-wrap">
+      <div class="section-heading-center">
+        <div class="pill-badge">GET IN TOUCH</div>
+        <h2 class="section-title">We’re here to assist your healthcare journey</h2>
+        <p class="section-subtitle">Have questions about clinical provider integration or platform security? Reach out anytime.</p>
+      </div>
+
+      <form class="contact-form" onsubmit="event.preventDefault(); const btn=this.querySelector('button'); btn.textContent='✓ Message Sent!'; setTimeout(()=>btn.textContent='Send Inquiry →',3000);">
+        <div class="form-group-field">
+          <label for="contact-name">Full Name</label>
+          <input class="form-input-box" id="contact-name" type="text" placeholder="Your name" required>
+        </div>
+        <div class="form-group-field">
+          <label for="contact-email">Email Address</label>
+          <input class="form-input-box" id="contact-email" type="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group-field">
+          <label for="contact-subject">Subject</label>
+          <input class="form-input-box" id="contact-subject" type="text" placeholder="How can we help?" required>
+        </div>
+        <div class="form-group-field">
+          <label for="contact-message">Message</label>
+          <textarea class="form-textarea-box" id="contact-message" placeholder="Your message here..." required></textarea>
+        </div>
+        <button class="btn-submit-inquiry" type="submit">
+          <span>Send Inquiry</span>
+          <span aria-hidden="true">&rarr;</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="landing-footer">
+    <div class="footer-brand-title">
+      <span>❤️</span>
+      <span>MEDIALERT</span>
+    </div>
+    <p class="footer-quote-text">
+      “MediAlert helps you stay on track with your medicines, appointments, and health goals — because your health matters.”
+    </p>
+    <p class="footer-copyright">
+      © 2026 MediAlert Health Systems. All rights reserved.
+    </p>
+  </footer>
+
+  <script src="userStorage.js"></script>
+  <script>
+    window.activeRole = 'patient';
+
+    function selectRoleTab(role) {
+      window.activeRole = role;
+      const tabPatient = document.getElementById('tab-patient');
+      const tabDoctor = document.getElementById('tab-doctor');
+      const emailInput = document.getElementById('email');
+      const signupLink = document.getElementById('signup-link');
+      const pinAuthDrawer = document.querySelector('.pin-auth-drawer');
+      if (signupLink) signupLink.href = role === 'doctor' ? 'signup.html?role=doctor' : 'signup.html';
+      if (pinAuthDrawer) pinAuthDrawer.hidden = role === 'doctor';
+
+      if (role === 'doctor') {
+        tabDoctor?.classList.add('is-active');
+        tabPatient?.classList.remove('is-active');
+        tabDoctor?.setAttribute('aria-selected', 'true');
+        tabPatient?.setAttribute('aria-selected', 'false');
+        if (emailInput && !emailInput.value) {
+          emailInput.placeholder = 'doctor@medialert.com';
+        }
+      } else {
+        tabPatient?.classList.add('is-active');
+        tabDoctor?.classList.remove('is-active');
+        tabPatient?.setAttribute('aria-selected', 'true');
+        tabDoctor?.setAttribute('aria-selected', 'false');
+        if (emailInput && !emailInput.value) {
+          emailInput.placeholder = 'ananya@medialert.com';
+        }
+      }
+    }
+
+    function togglePinDrawer() {
+      const drawer = document.getElementById('pin-form-wrap');
+      const btn = document.getElementById('toggle-pin-drawer');
+      if (drawer) {
+        const isShown = drawer.classList.toggle('is-visible');
+        btn.textContent = isShown ? '✕ Hide Quick PIN' : '🔑 Prefer Quick PIN Login?';
+        if (isShown) document.getElementById('quick-pin')?.focus();
+      }
+    }
+
+    function handleGoogleSignIn() {
+      selectRoleTab('patient');
+      fillCredentials('ananya@medialert.com', 'MediAlert@2026', '1234');
+      const form = document.getElementById('login-form');
+      if (form) {
+        document.getElementById('form-status').textContent = 'Authenticating with Google...';
+        setTimeout(() => {
+          document.getElementById('password-login-btn')?.click();
+        }, 500);
+      }
+    }
+  </script>
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Add a medical test to MediAlert">
+  <title>MediAlert | Add Medical Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    .form-page { max-width: 880px; margin: 0 auto; padding: 42px clamp(18px, 4vw, 58px) 60px; }
+    .form-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+    .back-link { display: inline-flex; min-height: 44px; align-items: center; gap: 10px; margin-bottom: 20px; color: var(--secondary); font-size: 12px; font-weight: 700; }
+    .back-link span { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--line); border-radius: 10px; color: var(--deep-teal); background: var(--white); }
+    .back-link:hover { color: var(--teal-accent); }
+    .form-header h1 { font-size: clamp(30px, 4vw, 44px); }
+    .form-header p { margin: 10px 0 0; color: var(--secondary); }
+    .form-card { padding: clamp(22px, 4vw, 38px); border: 1px solid rgba(220,233,231,.9); border-radius: var(--radius-card); background: var(--white); box-shadow: var(--shadow-card); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 21px 18px; }
+    .form-field { min-width: 0; }
+    .form-field--wide { grid-column: 1 / -1; }
+    .form-field label { display: block; margin-bottom: 8px; color: var(--ink); font-size: 12px; font-weight: 700; }
+    .required { color: var(--danger); }
+    .form-field input, .form-field textarea, .form-field select { width: 100%; border: 1px solid var(--line); border-radius: 13px; outline: none; color: var(--ink); background: #fbfdfd; transition: border-color 160ms ease, box-shadow 160ms ease; }
+    .form-field input, .form-field select { height: 50px; padding: 0 14px; }
+    .form-field textarea { min-height: 106px; padding: 13px 14px; resize: vertical; }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--teal-accent); box-shadow: 0 0 0 4px rgba(20,140,129,.12); }
+    .form-field input.has-error, .form-field select.has-error, .form-field textarea.has-error { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(217,56,56,.1); }
+    .field-error { min-height: 17px; margin: 5px 0 0; color: var(--danger); font-size: 11px; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 30px; padding-top: 23px; border-top: 1px solid #edf3f2; }
+    .form-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: 0 22px; border-radius: 13px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; }
+    .form-button--cancel { border: 1px solid var(--line); color: var(--secondary); background: var(--white); }
+    .form-button--save { border: 1px solid var(--deep-teal); color: var(--white); background: var(--deep-teal); }
+    .form-button--save:hover { background: var(--deep-teal-dark); }
+    .form-status { min-height: 20px; margin: 15px 0 0; color: var(--danger); font-size: 12px; text-align: right; }
+    @media (max-width: 780px) { .form-page { padding-top: 28px; } }
+    @media (max-width: 560px) { .form-header { display: block; } .form-grid { grid-template-columns: 1fr; gap: 2px; } .form-field, .form-field--wide { grid-column: auto; margin-bottom: 17px; } .form-actions { flex-direction: column-reverse; } .form-button { width: 100%; } .form-status { text-align: left; } }
+  </style>
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="dashboard.html" aria-label="MediAlert dashboard">
+        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 39S7 29.2 7 17.8C7 11.8 11.3 8 16.7 8c3.4 0 5.9 1.7 7.3 4.1C25.4 9.7 27.9 8 31.3 8 36.7 8 41 11.8 41 17.8 41 29.2 24 39 24 39Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M16 23.5h5l2-6 3.2 12 2-6H34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/></svg></span>
+        <span class="brand__name">MediAlert</span>
+      </a>
+      <nav class="sidebar__nav">
+        <a class="nav-link" href="dashboard.html"><span aria-hidden="true">🏠</span> Overview</a>
+        <a class="nav-link" href="dashboard.html#calendar-section"><span aria-hidden="true">📅</span> Health Calendar</a>
+        <a class="nav-link" href="medicines.html"><span aria-hidden="true">💊</span> Medicines</a>
+        <a class="nav-link" href="appointments.html"><span aria-hidden="true">🩺</span> Appointments</a>
+        <a class="nav-link is-active" href="tests.html"><span aria-hidden="true">🧪</span> Medical Tests</a>
+        <a class="nav-link" href="medical-reports.html"><span aria-hidden="true">📄</span> Medical Reports</a>
+        <a class="nav-link" href="prescriptions.html"><span aria-hidden="true">💊</span> Prescriptions</a>
+        <a class="nav-link" href="health-records.html"><span aria-hidden="true">❤️</span> Health Records</a>
+        <a class="nav-link" href="profile.html"><span aria-hidden="true">⚙️</span> Profile & PIN</a>
+      </nav>
+      <div class="sidebar__footer">
+        <button class="logout-link" type="button" data-action="logout">
+          <span aria-hidden="true">&larr;</span> Sign Out
+        </button>
+        <a class="profile-mini" href="profile.html">
+          <span class="avatar avatar--small" id="sidebar-avatar" aria-hidden="true">👤</span>
+          <span><strong id="sidebar-name">Patient</strong><small id="sidebar-role-label">Active Account</small></span>
+          <span class="profile-mini__arrow" aria-hidden="true">&gt;</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+        <div class="topbar__context"><span class="topbar__kicker">Clinical Checklist</span><span class="topbar__date">Add a medical test</span></div>
+        <div class="topbar__actions">
+          <button class="icon-button notification-button" id="notification-button" type="button" title="Reminders" aria-label="Notifications">
+            <span aria-hidden="true">🔔</span>
+            <b id="notification-count" style="display:none">0</b>
+          </button>
+          <a class="avatar" id="header-avatar" href="profile.html" aria-label="Open profile">👤</a>
+        </div>
+      </header>
+      <section class="form-page" aria-labelledby="form-title">
+        <a class="back-link" href="tests.html"><span aria-hidden="true">&lt;</span> Back to tests</a>
+        <div class="form-header">
+          <div>
+            <p class="eyebrow">Clinical Checklist</p>
+            <h1 id="form-title">Add medical test</h1>
+            <p>Track the diagnostic work that supports your next visit.</p>
+          </div>
+        </div>
+        <div class="form-card">
+          <form id="test-form" novalidate>
+            <div class="form-grid">
+              <div class="form-field form-field--wide">
+                <label for="test-name">Test name <span class="required">*</span></label>
+                <input id="test-name" name="testName" type="text" placeholder="e.g. Fasting Blood Sugar" required>
+                <p class="field-error" id="test-name-error" role="alert"></p>
+              </div>
+              <div class="form-field">
+                <label for="doctor-name">Doctor name <span class="required">*</span></label>
+                <input id="doctor-name" name="doctorName" type="text" placeholder="e.g. Dr. Sarah Lee" required>
+                <p class="field-error" id="doctor-name-error" role="alert"></p>
+              </div>
+              <div class="form-field">
+                <label for="due-date">Due date <span class="required">*</span></label>
+                <input id="due-date" name="dueDate" type="date" required>
+                <p class="field-error" id="due-date-error" role="alert"></p>
+              </div>
+              <div class="form-field">
+                <label for="priority">Priority <span class="required">*</span></label>
+                <select id="priority" name="priority" required>
+                  <option value="">Select priority</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+                <p class="field-error" id="priority-error" role="alert"></p>
+              </div>
+              <div class="form-field">
+                <label for="status">Status <span class="required">*</span></label>
+                <select id="status" name="status" required>
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                </select>
+                <p class="field-error" id="status-error" role="alert"></p>
+              </div>
+              <div class="form-field form-field--wide">
+                <label for="result-notes">Result notes</label>
+                <textarea id="result-notes" name="resultNotes" placeholder="Add findings or qualitative results when available"></textarea>
+                <p class="field-error" id="result-notes-error" role="alert"></p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="form-button form-button--cancel" id="cancel-button" type="button">Cancel</button>
+              <button class="form-button form-button--save" type="submit">Save test</button>
+            </div>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="userStorage.js"></script>
+  <script src="notificationService.js"></script>
+  <script src="medicalTest.js"></script>
+</body>
+</html>

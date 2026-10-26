@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MediAlert Doctor Clinical Portal & Shared Patient Management">
+  <title>MediAlert | Doctor Clinical Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    .doctor-layout {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 10px;
+    }
+    .patient-selector-panel {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      height: fit-content;
+    }
+    .patient-search-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 12px;
+      margin-bottom: 14px;
+      background: #faf8ff;
+      outline: none;
+    }
+    .patient-search-input:focus {
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 3px rgba(116, 72, 238, 0.12);
+    }
+    .patient-list-group {
+      display: grid;
+      gap: 8px;
+      max-height: 540px;
+      overflow-y: auto;
+    }
+    .patient-item-card {
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fdfcff;
+      cursor: pointer;
+      transition: all 140ms ease;
+    }
+    .patient-item-card:hover {
+      border-color: var(--primary-purple);
+      background: var(--soft-lavender);
+    }
+    .patient-item-card.is-active {
+      border-color: var(--primary-purple);
+      background: var(--soft-lavender);
+      box-shadow: 0 2px 10px rgba(116, 72, 238, 0.12);
+    }
+    .patient-item-card strong {
+      display: block;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .patient-item-card small {
+      display: block;
+      color: var(--secondary);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .doctor-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .patient-banner {
+      padding: 24px;
+      border-radius: var(--radius-card);
+      background: linear-gradient(135deg, var(--secondary-purple) 0%, #4a2896 100%);
+      color: #fff;
+      box-shadow: var(--shadow-card);
+    }
+    .patient-banner__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .patient-banner__title h2 {
+      color: #fff;
+      font-size: 22px;
+    }
+    .patient-banner__title p {
+      margin: 4px 0 0;
+      color: #d8c8f5;
+      font-size: 12px;
+    }
+    .patient-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .meta-box span {
+      display: block;
+      font-size: 10px;
+      color: #c9b5ee;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .meta-box strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    /* TABS */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--secondary);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 140ms ease;
+    }
+    .tab-btn:hover {
+      background: var(--soft-lavender);
+      color: var(--primary-purple);
+    }
+    .tab-btn.is-active {
+      background: var(--primary-purple);
+      color: #fff;
+    }
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.is-active {
+      display: block;
+    }
+
+    .doc-action-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .doctor-layout { grid-template-columns: 1fr; }
+      .patient-meta-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="doctor-dashboard.html">
+        <span class="brand__mark" aria-hidden="true">🩺</span>
+        <span class="brand__name">MediAlert MD</span>
+      </a>
+
+      <p class="sidebar__label">Clinical Portal</p>
+      <nav class="sidebar__nav" id="doctor-sidebar-nav">
+        <a class="nav-link is-active" id="nav-doc-patients" href="#tab-overview"><span aria-hidden="true">👥</span> Patient Records</a>
+        <a class="nav-link" id="nav-doc-calendar" href="#tab-calendar"><span aria-hidden="true">📅</span> Follow-ups</a>
+        <a class="nav-link" id="nav-doc-medicines" href="#tab-medicines"><span aria-hidden="true">💊</span> Prescribe Meds</a>
+        <a class="nav-link" id="nav-doc-reports" href="#tab-reports"><span aria-hidden="true">📄</span> Patient Reports</a>
+        <a class="nav-link" id="nav-doc-profile" href="profile.html"><span aria-hidden="true">⚙️</span> Doctor Profile</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <button class="logout-link" type="button" data-action="logout">
+          <span aria-hidden="true">&larr;</span> Sign Out
+        </button>
+        <a class="profile-mini" href="profile.html">
+          <span class="avatar avatar--small" id="sidebar-avatar" aria-hidden="true">👤</span>
+          <span>
+            <strong id="sidebar-name">Doctor</strong>
+            <small id="sidebar-specialization">Specialist</small>
+          </span>
+          <span class="profile-mini__arrow" aria-hidden="true">&gt;</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard-main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+        <div class="topbar__context">
+          <span class="topbar__kicker">
+            <span>Clinical Workspace</span>
+            <span class="role-badge role-badge--doctor">Doctor</span>
+          </span>
+          <span class="topbar__date" id="current-date">Today</span>
+        </div>
+        <div class="topbar__actions">
+          <span id="doctor-topbar-title" style="font-size: 12px; font-weight: 700; color: var(--secondary-purple);">Doctor · Specialist</span>
+          <a class="avatar" id="header-avatar" href="profile.html" aria-label="Open profile">👤</a>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">Shared Medical System</p>
+            <h1>Doctor Clinical Dashboard<span>.</span></h1>
+            <p class="welcome-row__subtitle">Manage patient diagnoses, prescriptions, appointments, and shared health records.</p>
+          </div>
+        </div>
+
+        <div class="doctor-layout">
+          <!-- LEFT: PATIENT SEARCH & DIRECTORY -->
+          <aside class="patient-selector-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <h3 style="font-size: 15px; color: var(--secondary-purple); margin: 0;">Patient Records</h3>
+              <button class="primary-btn" id="btn-doc-add-patient" type="button" style="min-height: 32px; font-size: 11px; padding: 0 12px; border-radius: 8px;">+ Add Patient</button>
+            </div>
+            <input type="search" class="patient-search-input" id="patient-search-input" placeholder="🔍 Search by name, ID, phone..." autocomplete="off">
+            <p id="doctor-patient-status" role="status" aria-live="polite" style="min-height:16px;font-size:11px;color:var(--secondary);"></p>
+            <div class="patient-list-group" id="patient-list-container">
+              <!-- Populated via JS -->
+            </div>
+          </aside>
+
+          <!-- RIGHT: SELECTED PATIENT WORKSPACE -->
+          <section class="doctor-workspace">
+            <!-- PATIENT SUMMARY BANNER -->
+            <div class="patient-banner" id="patient-banner">
+              <div class="patient-banner__top">
+                <div class="patient-banner__title">
+                  <h2 id="patient-name-display">No Patient Selected</h2>
+                  <p id="patient-email-display">Connect an authorized patient to view their records.</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span class="role-badge" style="background: rgba(255,255,255,0.2); color: #fff;">Synced Record</span>
+                  <button id="btn-banner-remove-patient" type="button" style="display:none;background: rgba(217, 56, 56, 0.25); border: 1px solid rgba(255, 180, 180, 0.4); color: #fff; font-size: 11px; font-weight: 700; border-radius: 8px; padding: 5px 12px; cursor: pointer; transition: background 140ms ease;">✕ Remove</button>
+                </div>
+              </div>
+              <div class="patient-meta-grid">
+                <div class="meta-box">
+                  <span>Age / Gender</span>
+                  <strong id="patient-age-gender">--</strong>
+                </div>
+                <div class="meta-box">
+                  <span>Blood Group</span>
+                  <strong id="patient-blood-group">--</strong>
+                </div>
+                <div class="meta-box">
+                  <span>Conditions</span>
+                  <strong id="patient-conditions">--</strong>
+                </div>
+                <div class="meta-box">
+                  <span>Allergies</span>
+                  <strong id="patient-allergies" style="color: #ffb8b8;">--</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB NAVIGATION -->
+            <nav class="tab-nav">
+              <button class="tab-btn is-active" data-tab="tab-overview">Overview & Vitals</button>
+              <button class="tab-btn" data-tab="tab-medicines">Medicines & Prescriptions</button>
+              <button class="tab-btn" data-tab="tab-calendar">Upcoming Follow-ups</button>
+              <button class="tab-btn" data-tab="tab-reports">Medical Reports (PDF)</button>
+              <button class="tab-btn" data-tab="tab-notes">Clinical Notes & Treatment</button>
+              <button class="tab-btn" data-tab="tab-activity">Recent Activity</button>
+            </nav>
+
+            <!-- TAB 1: OVERVIEW & VITALS -->
+            <div class="tab-pane is-active" id="tab-overview">
+              <div class="summary-card" style="margin-bottom: 20px;">
+                <div class="section-heading section-heading--light">
+                  <div>
+                    <p class="eyebrow">Patient Longitudinal Data</p>
+                    <h2>Health Vitals</h2>
+                  </div>
+                  <button class="secondary-btn" id="btn-doc-add-vital" style="min-height: 32px; font-size: 11px;">+ Record Vital</button>
+                </div>
+                <div class="metrics-grid" id="doc-vitals-grid">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+              <!-- Treatment Summary Preview -->
+              <div class="dashboard-card">
+                <div class="section-heading">
+                  <div>
+                    <p class="eyebrow">Active Treatment Plan</p>
+                    <h2>Clinical Overview</h2>
+                  </div>
+                </div>
+                <div id="doc-treatment-overview-box" style="font-size: 13px; color: var(--secondary); line-height: 1.6; background: #faf9ff; padding: 16px; border-radius: 12px; border: 1px solid var(--line);">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: MEDICINES & PRESCRIPTIONS -->
+            <div class="tab-pane" id="tab-medicines">
+              <div class="dashboard-card">
+                <div class="section-heading">
+                  <div>
+                    <p class="eyebrow">Medical Regimen</p>
+                    <h2>Patient Medications & Adherence</h2>
+                  </div>
+                  <div style="display:flex;gap:8px;">
+                    <button class="primary-btn" id="btn-doc-add-med" type="button">+ Prescribe Medicine</button>
+                    <button class="secondary-btn" id="btn-doc-add-rx" type="button">+ Add Prescription</button>
+                  </div>
+                </div>
+                <div class="data-list" id="doc-medicines-list">
+                  <!-- Populated via JS -->
+                </div>
+
+                <h3 style="margin: 24px 0 12px; font-size: 16px; color: var(--secondary-purple);">Prescriptions Archive</h3>
+                <div class="data-list" id="doc-prescriptions-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: UPCOMING FOLLOW-UPS -->
+            <div class="tab-pane" id="tab-calendar">
+              <div class="dashboard-card">
+                <div class="section-heading">
+                  <div>
+                    <p class="eyebrow">Clinical Follow-up</p>
+                    <h2>Upcoming Follow-ups</h2>
+                  </div>
+                </div>
+                <div class="event-list" id="doc-calendar-events-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 4: MEDICAL REPORTS (PDF) -->
+            <div class="tab-pane" id="tab-reports">
+              <div class="dashboard-card">
+                <div class="section-heading">
+                  <div>
+                    <p class="eyebrow">Diagnostic Archive</p>
+                    <h2>Patient Uploaded Reports (PDF)</h2>
+                  </div>
+                  <small style="color: var(--secondary); font-size: 11px;">Doctor can view and download patient reports</small>
+                </div>
+                <div class="reports-grid" id="doc-reports-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 5: CLINICAL NOTES & TREATMENT -->
+            <div class="tab-pane" id="tab-notes">
+              <div class="dashboard-card">
+                <div class="section-heading">
+                  <div>
+                    <p class="eyebrow">Doctor Documentation</p>
+                    <h2>Clinical Notes & Treatment History</h2>
+                  </div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="secondary-btn" id="btn-doc-add-treatment" type="button">+ Add Treatment History</button>
+                    <button class="primary-btn" id="btn-doc-add-note" type="button">+ Add Clinical Note</button>
+                  </div>
+                </div>
+                <div class="data-list" id="doc-clinical-notes-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 6: RECENT ACTIVITY -->
+            <div class="tab-pane" id="tab-activity">
+              <div class="dashboard-card">
+                <div class="section-heading">
+                  <div>
+                    <p class="eyebrow">Audit Log</p>
+                    <h2>Shared Patient Timeline</h2>
+                  </div>
+                </div>
+                <div class="activity-list" id="doc-activity-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- DOCTOR MODALS -->
+  <!-- ========================================== -->
+
+  <!-- 1. DOCTOR PRESCRIBE MEDICINE MODAL -->
+  <div class="modal-backdrop" id="modal-doc-med" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>+ Prescribe Medicine</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-doc-med">&times;</button>
+      </div>
+      <form id="form-doc-med">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="doc-med-name">Medicine Name *</label>
+            <input id="doc-med-name" type="text" placeholder="e.g. Lisinopril" required>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="doc-med-dosage">Dosage *</label>
+              <input id="doc-med-dosage" type="text" placeholder="e.g. 10 mg" required>
+            </div>
+            <div class="form-field">
+              <label for="doc-med-form">Form</label>
+              <select id="doc-med-form">
+                <option value="Tablet">Tablet</option>
+                <option value="Capsule">Capsule</option>
+                <option value="Syrup">Syrup</option>
+                <option value="Injection">Injection</option>
+                <option value="Drops">Drops</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="doc-med-freq">Frequency</label>
+              <select id="doc-med-freq">
+                <option value="Daily">Daily</option>
+                <option value="Twice Daily">Twice Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="As Needed">As Needed</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="doc-med-time">Time</label>
+              <input id="doc-med-time" type="time" value="08:00">
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="doc-med-instructions">Clinical Instructions</label>
+            <textarea id="doc-med-instructions" placeholder="Take after meals with water"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-doc-med">Cancel</button>
+          <button class="primary-btn" type="submit">Prescribe Medicine</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. DOCTOR ADD CLINICAL NOTE -->
+  <div class="modal-backdrop" id="modal-doc-note" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="doc-note-modal-title">+ Add Clinical Note & Treatment Update</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-doc-note">&times;</button>
+      </div>
+      <form id="form-doc-note">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="doc-note-title">Assessment / Subject *</label>
+            <input id="doc-note-title" type="text" placeholder="e.g. Hypertension & Lipid Follow-up" required>
+          </div>
+          <div class="form-field">
+            <label for="doc-note-content">Clinical Observations *</label>
+            <textarea id="doc-note-content" placeholder="Patient vital evaluation, symptoms, diagnosis..." required></textarea>
+          </div>
+          <div class="form-field">
+            <label for="doc-note-treatment">Treatment Plan & Directives</label>
+            <textarea id="doc-note-treatment" placeholder="Directives for medicine titration, follow-up timeline..."></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-doc-note">Cancel</button>
+          <button class="primary-btn" id="doc-note-save-button" type="submit">Save Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. DOCTOR ADD PRESCRIPTION -->
+  <div class="modal-backdrop" id="modal-doc-rx" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>+ Add Formal Prescription</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-doc-rx">&times;</button>
+      </div>
+      <form id="form-doc-rx">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="doc-rx-diagnosis">Diagnosis / Indication *</label>
+            <input id="doc-rx-diagnosis" type="text" placeholder="e.g. Stage 1 Essential Hypertension" required>
+          </div>
+          <div class="form-field">
+            <label for="doc-rx-medicines">Rx Medicines List *</label>
+            <textarea id="doc-rx-medicines" placeholder="1. Lisinopril 10mg - Once daily at night&#10;2. Atorvastatin 20mg - Once daily at bedtime" required></textarea>
+          </div>
+          <div class="form-field">
+            <label for="doc-rx-notes">Dietary & Lifestyle Advice</label>
+            <textarea id="doc-rx-notes" placeholder="Low sodium intake, moderate daily walking..."></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-doc-rx">Cancel</button>
+          <button class="primary-btn" type="submit">Issue Prescription</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. IN-APP PDF VIEWER MODAL (FOR DOCTOR VIEWING PATIENT REPORTS) -->
+  <div class="modal-backdrop" id="modal-pdf-viewer" role="dialog" aria-modal="true">
+    <div class="modal-box modal-box--wide">
+      <div class="modal-header">
+        <div>
+          <h2 id="pdf-modal-title">Patient Medical Report</h2>
+          <p id="pdf-modal-meta" style="font-size: 11px; color: var(--secondary); margin-top: 2px;">Document details</p>
+        </div>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-pdf-viewer">&times;</button>
+      </div>
+      <iframe id="pdf-frame" class="pdf-viewer-frame" title="PDF Preview"></iframe>
+      <div class="modal-actions">
+        <a id="pdf-download-link" class="secondary-btn" href="#" download="report.pdf">
+          <span>&darr;</span> Download PDF
+        </a>
+        <button class="primary-btn" type="button" data-close-modal="modal-pdf-viewer">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. DOCTOR ADD PATIENT MODAL -->
+  <div class="modal-backdrop" id="modal-doc-add-patient" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>+ Add or Connect Patient</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-doc-add-patient">&times;</button>
+      </div>
+      <p style="font-size:12px;color:var(--secondary);">Enter the Patient ID from an existing Patient / Guardian account. Their profile and medical records will not be changed.</p>
+      <div id="form-doc-add-patient">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="new-pat-id">Patient ID</label>
+            <input id="new-pat-id" type="text" placeholder="e.g. MED-PT-0001" autocomplete="off">
+          </div>
+        </div>
+        <p id="add-pat-error" role="status" aria-live="polite" style="color:var(--danger);font-size:12px;margin-top:10px;"></p>
+        <div id="verified-patient" hidden style="margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fbfdfd;">
+          <span style="display:block;font-size:11px;color:var(--secondary);">Verified patient</span>
+          <strong id="verified-patient-name" style="display:block;margin-top:3px;"></strong>
+          <small id="verified-patient-id" style="color:var(--secondary);"></small>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-doc-add-patient">Cancel</button>
+          <button class="secondary-btn" id="btn-verify-patient" type="button">Verify Patient</button>
+          <button class="primary-btn" id="btn-connect-patient" type="button" disabled hidden>Connect Patient</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. CONFIRM REMOVE PATIENT DIALOG -->
+  <div class="modal-backdrop" id="modal-doc-confirm-remove" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 style="color: var(--danger);">Remove Patient</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-doc-confirm-remove">&times;</button>
+      </div>
+      <p style="font-size: 13px; color: var(--ink); margin: 0 0 16px; line-height: 1.5;">
+        Remove this patient from your patient list? Their account and medical records will remain unchanged.
+      </p>
+      <div style="background: #faf8ff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 18px;">
+        <strong id="remove-pat-name-display" style="display:block; font-size:13px; color:var(--ink);">Patient Name</strong>
+        <small id="remove-pat-email-display" style="color:var(--secondary); font-size:11px;">Patient ID</small>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button" data-close-modal="modal-doc-confirm-remove">Cancel</button>
+        <button class="primary-btn" id="btn-confirm-remove-pat" type="button" style="background: var(--danger);">Remove Patient</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="userStorage.js"></script>
+  <script src="doctor-dashboard.js"></script>
+</body>
+</html>

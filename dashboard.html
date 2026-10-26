@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MediAlert Patient & Guardian Health Dashboard">
+  <title>MediAlert | Patient & Guardian Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="dashboard.html" aria-label="MediAlert dashboard">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M24 39S7 29.2 7 17.8C7 11.8 11.3 8 16.7 8c3.4 0 5.9 1.7 7.3 4.1C25.4 9.7 27.9 8 31.3 8 36.7 8 41 11.8 41 17.8 41 29.2 24 39 24 39Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M16 23.5h5l2-6 3.2 12 2-6H34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/></svg>
+        </span>
+        <span class="brand__name">MediAlert</span>
+      </a>
+
+      <p class="sidebar__label">Workspace</p>
+      <nav class="sidebar__nav">
+        <a class="nav-link is-active" href="dashboard.html"><span aria-hidden="true">🏠</span> Overview</a>
+        <a class="nav-link" href="#calendar-section"><span aria-hidden="true">📅</span> Health Calendar</a>
+        <a class="nav-link" href="medicines.html"><span aria-hidden="true">💊</span> Medicines</a>
+        <a class="nav-link" href="appointments.html"><span aria-hidden="true">🩺</span> Appointments</a>
+        <a class="nav-link" href="tests.html"><span aria-hidden="true">🧪</span> Medical Tests</a>
+        <a class="nav-link" href="medical-reports.html"><span aria-hidden="true">📄</span> Medical Reports</a>
+        <a class="nav-link" href="prescriptions.html"><span aria-hidden="true">💊</span> Prescriptions</a>
+        <a class="nav-link" href="health-records.html"><span aria-hidden="true">❤️</span> Health Records</a>
+        <a class="nav-link" href="profile.html"><span aria-hidden="true">⚙️</span> Profile & PIN</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <button class="logout-link" type="button" data-action="logout">
+          <span aria-hidden="true">&larr;</span> Sign Out
+        </button>
+        <a class="profile-mini" href="profile.html">
+          <span class="avatar avatar--small" id="sidebar-avatar" aria-hidden="true">👤</span>
+          <span>
+            <strong id="sidebar-name">Patient</strong>
+            <small id="sidebar-role-label">Patient / Guardian</small>
+          </span>
+          <span class="profile-mini__arrow" aria-hidden="true">&gt;</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="dashboard-main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+        <div class="topbar__context">
+          <span class="topbar__kicker">Patient / Guardian Workspace</span>
+          <span class="topbar__date" id="current-date"></span>
+        </div>
+        <div class="topbar__actions">
+          <button class="icon-button notification-button" id="notification-button" type="button" title="Reminders" aria-label="Notifications">
+            <span aria-hidden="true">🔔</span>
+            <b id="notification-count" style="display:none">0</b>
+          </button>
+          <a class="avatar" id="header-avatar" href="profile.html" aria-label="Open profile">👤</a>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- WELCOME HEADER -->
+        <section class="welcome-row" aria-labelledby="welcome-title">
+          <div>
+            <p class="eyebrow">Personal Healthcare Overview</p>
+            <h1 id="welcome-title">Good morning<span>.</span></h1>
+            <p class="welcome-row__subtitle">Everything you and your doctor need for everyday care coordination.</p>
+          </div>
+          <div class="wellness-note">
+            <span class="wellness-note__pulse" aria-hidden="true"></span>
+            <span>
+              <strong id="primary-doctor-status">No doctors added yet</strong>
+              <div id="primary-doctor-label" style="font-size:11px;color:var(--secondary);">A doctor can connect using your registered email.</div>
+            </span>
+          </div>
+        </section>
+
+        <!-- HEALTH VITALS SUMMARY -->
+        <section class="summary-card" aria-labelledby="summary-title">
+          <div class="section-heading section-heading--light">
+            <div>
+              <p class="eyebrow">At a Glance</p>
+              <h2 id="summary-title">Health Vitals</h2>
+            </div>
+            <button class="secondary-btn" id="btn-open-log-vitals" style="min-height: 32px; padding: 0 12px; font-size: 11px;">
+              + Update Vitals
+            </button>
+          </div>
+          <div class="metrics-grid" id="vitals-grid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+        <!-- VISUAL CARE ESSENTIALS & OVERVIEW HUB -->
+        <section class="care-hub-section" aria-labelledby="care-hub-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Medical Essentials</p>
+              <h2 id="care-hub-title">Care Overview & Modules</h2>
+            </div>
+          </div>
+          <div class="care-hub-grid">
+            <!-- 1. MEDICINES -->
+            <a class="care-hub-card care-hub-card--meds" href="medicines.html">
+              <div class="care-hub-card__top">
+                <div class="care-hub-card__icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+                </div>
+                <span class="care-hub-card__badge" id="hub-meds-badge">None yet</span>
+              </div>
+              <div class="care-hub-card__body">
+                <strong class="care-hub-card__title">Daily Medicines</strong>
+                <span class="care-hub-card__desc">Dosage, timing & adherence</span>
+              </div>
+              <span class="care-hub-card__arrow">&rarr;</span>
+            </a>
+
+            <!-- 2. DOCTOR APPOINTMENTS -->
+            <a class="care-hub-card care-hub-card--apts" href="appointments.html">
+              <div class="care-hub-card__top">
+                <div class="care-hub-card__icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+                </div>
+                <span class="care-hub-card__badge" id="hub-apts-badge">Schedule</span>
+              </div>
+              <div class="care-hub-card__body">
+                <strong class="care-hub-card__title">Doctor Visits</strong>
+                <span class="care-hub-card__desc">Consultations & follow-ups</span>
+              </div>
+              <span class="care-hub-card__arrow">&rarr;</span>
+            </a>
+
+            <!-- 3. MEDICAL TESTS -->
+            <a class="care-hub-card care-hub-card--tests" href="tests.html">
+              <div class="care-hub-card__top">
+                <div class="care-hub-card__icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31L4.75 18.1A2 2 0 0 0 6.46 21h11.08a2 2 0 0 0 1.71-2.9L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
+                </div>
+                <span class="care-hub-card__badge" id="hub-tests-badge">None yet</span>
+              </div>
+              <div class="care-hub-card__body">
+                <strong class="care-hub-card__title">Medical Tests</strong>
+                <span class="care-hub-card__desc">Diagnostic lab checklist</span>
+              </div>
+              <span class="care-hub-card__arrow">&rarr;</span>
+            </a>
+
+            <!-- 4. PRESCRIPTIONS -->
+            <a class="care-hub-card care-hub-card--rx" href="prescriptions.html">
+              <div class="care-hub-card__top">
+                <div class="care-hub-card__icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <span class="care-hub-card__badge" id="hub-rx-badge">None yet</span>
+              </div>
+              <div class="care-hub-card__body">
+                <strong class="care-hub-card__title">Prescriptions</strong>
+                <span class="care-hub-card__desc">Clinical doctor orders</span>
+              </div>
+              <span class="care-hub-card__arrow">&rarr;</span>
+            </a>
+
+            <!-- 5. HEALTH RECORDS -->
+            <a class="care-hub-card care-hub-card--records" href="health-records.html">
+              <div class="care-hub-card__top">
+                <div class="care-hub-card__icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <span class="care-hub-card__badge" id="hub-records-badge">None yet</span>
+              </div>
+              <div class="care-hub-card__body">
+                <strong class="care-hub-card__title">Health Records</strong>
+                <span class="care-hub-card__desc">Longitudinal vital history</span>
+              </div>
+              <span class="care-hub-card__arrow">&rarr;</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- 10. HEALTH CALENDAR (PROMINENT HOME COMPONENT) -->
+        <section class="calendar-card" id="calendar-section" aria-labelledby="calendar-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Care Schedule</p>
+              <h2 id="calendar-title">Health Calendar</h2>
+            </div>
+            <button class="primary-btn" id="btn-open-add-event" type="button">
+              + Add Health Event
+            </button>
+          </div>
+
+          <div class="calendar-layout">
+            <!-- Calendar Month Grid -->
+            <div class="calendar-widget">
+              <div class="calendar-header">
+                <span class="calendar-title" id="calendar-month-year">October 2026</span>
+                <div class="calendar-nav-btns">
+                  <button class="cal-btn" id="cal-prev-month" type="button" aria-label="Previous month">&lt;</button>
+                  <button class="cal-btn" id="cal-today-btn" type="button" style="width: auto; padding: 0 10px; font-size: 11px; font-weight: 700;">Today</button>
+                  <button class="cal-btn" id="cal-next-month" type="button" aria-label="Next month">&gt;</button>
+                </div>
+              </div>
+
+              <div class="calendar-weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              <div class="calendar-days-grid" id="calendar-days-grid">
+                <!-- Days populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Upcoming Health Events Section -->
+            <div class="upcoming-events-panel">
+              <h3>
+                <span id="events-panel-heading">Upcoming Health Events</span>
+                <small style="font-size: 11px; font-weight: normal; color: var(--secondary);" id="events-filter-hint">Next 30 days</small>
+              </h3>
+              <div class="event-list" id="upcoming-events-list">
+                <!-- Events populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MAIN TWO-COLUMN GRID (MEDICINES, APPOINTMENTS, TESTS) -->
+        <div class="dashboard-grid">
+          <!-- TODAY'S MEDICINES & DOSE LOGGING -->
+          <section class="dashboard-card" id="medicines-section" aria-labelledby="medicines-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Daily Regimen</p>
+                <h2 id="medicines-title">Today's Medicines</h2>
+              </div>
+              <a class="text-link" href="medicines.html">View all <span>&gt;</span></a>
+            </div>
+            <div class="data-list" id="today-medicines-list">
+              <!-- Populated via JS -->
+            </div>
+          </section>
+
+          <!-- NEXT CONSULTATION & VISITS -->
+          <section class="dashboard-card" id="appointments-section" aria-labelledby="appointments-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Care Consultations</p>
+                <h2 id="appointments-title">Next Doctor Visit</h2>
+              </div>
+              <a class="text-link" href="appointments.html">All visits <span>&gt;</span></a>
+            </div>
+            <div id="next-appointment-card">
+              <!-- Populated via JS -->
+            </div>
+          </section>
+        </div>
+
+        <!-- 13. MEDICAL REPORTS / PDF UPLOAD SECTION -->
+        <section class="reports-section" id="reports-section" aria-labelledby="reports-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Diagnostic Documents</p>
+              <h2 id="reports-title">Medical Reports (PDF)</h2>
+            </div>
+            <button class="primary-btn" id="btn-open-upload-report" type="button">
+              + Upload Report
+            </button>
+          </div>
+          <div class="reports-grid" id="reports-list">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+        <!-- 18. RECENT HEALTHCARE ACTIVITY -->
+        <section class="activity-card" id="activity-section" aria-labelledby="activity-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Timeline</p>
+              <h2 id="activity-title">Recent Healthcare Activity</h2>
+            </div>
+            <span class="card-symbol" aria-hidden="true">⏱</span>
+          </div>
+          <div class="activity-list" id="activity-list">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODALS -->
+  <!-- ========================================== -->
+
+  <!-- 1. IN-APP PDF VIEWER MODAL -->
+  <div class="modal-backdrop" id="modal-pdf-viewer" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
+    <div class="modal-box modal-box--wide">
+      <div class="modal-header">
+        <div>
+          <h2 id="pdf-modal-title">Medical Report Preview</h2>
+          <p id="pdf-modal-meta" style="font-size: 11px; color: var(--secondary); margin-top: 2px;">Document details</p>
+        </div>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-pdf-viewer" aria-label="Close">&times;</button>
+      </div>
+      <div class="pdf-viewer-container">
+        <iframe id="pdf-frame" class="pdf-viewer-frame" title="PDF Document Preview"></iframe>
+      </div>
+      <div class="modal-actions">
+        <a id="pdf-download-link" class="secondary-btn" href="#" download="medical_report.pdf">
+          <span>&darr;</span> Download PDF
+        </a>
+        <button class="primary-btn" type="button" data-close-modal="modal-pdf-viewer">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ADD / EDIT HEALTH EVENT MODAL -->
+  <div class="modal-backdrop" id="modal-add-event" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="event-modal-title">+ Add Health Event</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-add-event" aria-label="Close">&times;</button>
+      </div>
+      <form id="form-add-event" novalidate>
+        <input type="hidden" id="event-edit-id" value="">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="event-type">Event Type *</label>
+            <select id="event-type" required>
+              <option value="doctor_appointment">🩺 Doctor Appointment</option>
+              <option value="blood_test">🧪 Blood Test / Lab Test</option>
+              <option value="vaccination">💉 Vaccination</option>
+              <option value="health_checkup">❤️ Health Checkup</option>
+              <option value="medicine_prescription">💊 Medicine / Prescription</option>
+              <option value="follow_up">📋 Follow-up</option>
+              <option value="medical_report">📄 Medical Report Related Event</option>
+              <option value="reminder">🔔 Reminder</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="event-title">Event Title *</label>
+            <input id="event-title" type="text" placeholder="e.g. Follow-up with Dr. Sarah Lee" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="event-date">Date *</label>
+              <input id="event-date" type="date" required>
+            </div>
+            <div class="form-field">
+              <label for="event-time">Time (Optional)</label>
+              <input id="event-time" type="time">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="event-location">Doctor / Hospital / Laboratory (Optional)</label>
+            <input id="event-location" type="text" placeholder="e.g. Dr. Sarah Lee · Metro General Hospital">
+          </div>
+
+          <div class="form-field">
+            <label for="event-notes">Notes (Optional)</label>
+            <textarea id="event-notes" placeholder="e.g. 12 hours fasting required before blood draw"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-add-event">Cancel</button>
+          <button class="primary-btn" type="submit" id="btn-save-event">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. UPLOAD MEDICAL REPORT (PDF) MODAL -->
+  <div class="modal-backdrop" id="modal-upload-report" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="report-modal-title">+ Upload Medical Report (PDF)</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-upload-report" aria-label="Close">&times;</button>
+      </div>
+      <form id="form-upload-report" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="report-name">Report Name *</label>
+            <input id="report-name" type="text" placeholder="e.g. Blood Test - September 2026" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="report-type">Report Type *</label>
+              <select id="report-type" required>
+                <option value="Blood Test">Blood Test</option>
+                <option value="CBC">Complete Blood Count (CBC)</option>
+                <option value="X-Ray">X-Ray Report</option>
+                <option value="Scan">MRI / CT Scan</option>
+                <option value="Lab Report">Laboratory Report</option>
+                <option value="Prescription">Doctor Prescription</option>
+                <option value="Doctor Report">Clinical Summary</option>
+                <option value="Medical Certificate">Medical Certificate</option>
+                <option value="Other">Other Healthcare Document</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="report-date">Date *</label>
+              <input id="report-date" type="date" required>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="report-hospital">Hospital / Laboratory (Optional)</label>
+            <input id="report-hospital" type="text" placeholder="e.g. Metro Diagnostics Laboratory">
+          </div>
+
+          <div class="form-field">
+            <label for="report-notes">Clinical Notes (Optional)</label>
+            <textarea id="report-notes" placeholder="Summary or doctor notes regarding this diagnostic document"></textarea>
+          </div>
+
+          <div class="form-field">
+            <label for="report-file">PDF Document * <small style="font-weight: normal; color: var(--secondary);">(Max 10 MB, .pdf only)</small></label>
+            <input id="report-file" type="file" accept="application/pdf,.pdf" required style="padding: 8px;">
+            <p id="report-upload-error" style="color: var(--danger); font-size: 11px; margin-top: 4px;"></p>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-upload-report">Cancel</button>
+          <button class="primary-btn" type="submit" id="btn-submit-report">Upload Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. RENAME REPORT MODAL -->
+  <div class="modal-backdrop" id="modal-rename-report" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2>Rename Medical Report</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-rename-report">&times;</button>
+      </div>
+      <form id="form-rename-report">
+        <input type="hidden" id="rename-report-id">
+        <div class="form-field">
+          <label for="rename-report-name">New Report Name *</label>
+          <input id="rename-report-name" type="text" required>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-rename-report">Cancel</button>
+          <button class="primary-btn" type="submit">Save Name</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. LOG VITALS MODAL -->
+  <div class="modal-backdrop" id="modal-log-vitals" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>+ Update Health Vitals</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-log-vitals">&times;</button>
+      </div>
+      <form id="form-log-vitals">
+        <div class="form-grid">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="vital-bp-sys">Blood Pressure (Systolic)</label>
+              <input id="vital-bp-sys" type="number" placeholder="120" min="60" max="250">
+            </div>
+            <div class="form-field">
+              <label for="vital-bp-dia">Blood Pressure (Diastolic)</label>
+              <input id="vital-bp-dia" type="number" placeholder="80" min="40" max="150">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="vital-sugar">Blood Sugar (mg/dL)</label>
+              <input id="vital-sugar" type="number" placeholder="95">
+            </div>
+            <div class="form-field">
+              <label for="vital-pulse">Heart Rate (BPM)</label>
+              <input id="vital-pulse" type="number" placeholder="72">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="vital-weight">Body Weight (kg)</label>
+              <input id="vital-weight" type="number" step="0.1" placeholder="68.5">
+            </div>
+            <div class="form-field">
+              <label for="vital-temperature">Temperature (°C)</label>
+              <input id="vital-temperature" type="number" step="0.1" min="25" max="45" placeholder="36.6">
+            </div>
+            <div class="form-field">
+              <label for="vital-spo2">Oxygen Level SpO2 (%)</label>
+              <input id="vital-spo2" type="number" placeholder="99" min="70" max="100">
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-log-vitals">Cancel</button>
+          <button class="primary-btn" type="submit">Save Vitals</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="userStorage.js"></script>
+  <script src="notificationService.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

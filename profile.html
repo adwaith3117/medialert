@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MediAlert Profile & Quick PIN Settings">
+  <title>MediAlert | Profile & Account Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    .profile-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px clamp(18px, 4vw, 48px) 60px;
+    }
+    .profile-card {
+      padding: clamp(22px, 4vw, 36px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      margin-bottom: 24px;
+    }
+    .profile-identity {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #edf3f2;
+    }
+    .profile-avatar-big {
+      display: grid;
+      width: 62px;
+      height: 62px;
+      place-items: center;
+      border-radius: 18px;
+      color: var(--deep-teal);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: var(--mint);
+    }
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .profile-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .profile-field input, .profile-field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: var(--ink);
+      background: #fbfdfd;
+      padding: 0 14px;
+      min-height: 44px;
+      font-size: 13px;
+    }
+    .profile-field textarea {
+      min-height: 80px;
+      padding: 10px 14px;
+      resize: vertical;
+    }
+    .profile-field input:focus, .profile-field textarea:focus {
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 3px rgba(116, 72, 238, 0.12);
+    }
+    .profile-field input:disabled, .profile-field textarea:disabled {
+      color: var(--secondary);
+      background: #f5f3fa;
+    }
+    .profile-field--wide {
+      grid-column: 1 / -1;
+    }
+    .pin-management-card {
+      padding: 24px;
+      border: 1px solid var(--border-lavender);
+      border-radius: var(--radius-card);
+      background: #faf8ff;
+      margin-bottom: 24px;
+    }
+    .pin-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 12px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" id="profile-brand-link" href="dashboard.html">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M24 39S7 29.2 7 17.8C7 11.8 11.3 8 16.7 8c3.4 0 5.9 1.7 7.3 4.1C25.4 9.7 27.9 8 31.3 8 36.7 8 41 11.8 41 17.8 41 29.2 24 39 24 39Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M16 23.5h5l2-6 3.2 12 2-6H34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/></svg>
+        </span>
+        <span class="brand__name">MediAlert</span>
+      </a>
+      <p class="sidebar__label">Workspace</p>
+      <nav class="sidebar__nav" id="profile-sidebar-nav">
+        <a class="nav-link" href="dashboard.html"><span aria-hidden="true">🏠</span> Overview</a>
+        <a class="nav-link" href="dashboard.html#calendar-section"><span aria-hidden="true">📅</span> Health Calendar</a>
+        <a class="nav-link" href="medicines.html"><span aria-hidden="true">💊</span> Medicines</a>
+        <a class="nav-link" href="appointments.html"><span aria-hidden="true">🩺</span> Appointments</a>
+        <a class="nav-link" href="tests.html"><span aria-hidden="true">🧪</span> Medical Tests</a>
+        <a class="nav-link" href="medical-reports.html"><span aria-hidden="true">📄</span> Medical Reports</a>
+        <a class="nav-link" href="prescriptions.html"><span aria-hidden="true">💊</span> Prescriptions</a>
+        <a class="nav-link" href="health-records.html"><span aria-hidden="true">❤️</span> Health Records</a>
+        <a class="nav-link is-active" href="profile.html"><span aria-hidden="true">⚙️</span> Profile & PIN</a>
+      </nav>
+      <div class="sidebar__footer">
+        <button class="logout-link" type="button" data-action="logout">
+          <span aria-hidden="true">&larr;</span> Sign Out
+        </button>
+        <a class="profile-mini" href="profile.html">
+          <span class="avatar avatar--small" id="sidebar-avatar" aria-hidden="true">👤</span>
+          <span><strong id="sidebar-name">User</strong><small id="sidebar-role-label">Account</small></span>
+          <span class="profile-mini__arrow" aria-hidden="true">&gt;</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+        <div class="topbar__context">
+          <span class="topbar__kicker">Account Settings</span>
+          <span class="topbar__date">Profile & Security Management</span>
+        </div>
+        <div class="topbar__actions">
+          <button class="icon-button notification-button" id="notification-button" type="button" title="Reminders" aria-label="Notifications">
+            <span aria-hidden="true">🔔</span>
+            <b id="notification-count" style="display:none">0</b>
+          </button>
+          <a class="avatar" id="header-avatar" href="profile.html" aria-label="Open profile">👤</a>
+        </div>
+      </header>
+
+      <section class="profile-page">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">User Management</p>
+            <h1>Account & Profile Settings<span>.</span></h1>
+            <p class="welcome-row__subtitle">Manage personal information and login security preferences.</p>
+          </div>
+        </div>
+
+        <!-- QUICK PIN MANAGEMENT CARD (PATIENT / GUARDIAN ONLY) -->
+        <div class="pin-management-card" id="pin-section-container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Quick Access</p>
+              <h2 style="font-size: 17px; color: var(--secondary-purple);">Quick PIN Security</h2>
+            </div>
+            <span class="role-badge role-badge--patient">Patient / Guardian</span>
+          </div>
+          <p style="font-size: 12px; color: var(--secondary); margin: 0 0 10px;">
+            Quick PIN enables 4–6 digit instant sign in on trusted devices. Never share your PIN.
+          </p>
+          <div class="pin-status-row">
+            <div>
+              <strong id="pin-status-title" style="display:block;font-size:13px;color:var(--ink);">Quick PIN: Enabled</strong>
+              <small id="pin-status-desc" style="color:var(--secondary);font-size:11px;">Configured with secure PBKDF2 hashing</small>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="secondary-btn" id="btn-change-pin" type="button">Change Quick PIN</button>
+              <button class="secondary-btn" id="btn-disable-pin" type="button" style="color:var(--danger);border-color:#f7d2d2;">Disable PIN</button>
+            </div>
+          </div>
+          <p id="pin-action-status" style="font-size: 12px; margin-top: 8px;"></p>
+        </div>
+
+        <!-- PROFILE INFORMATION FORM -->
+        <div class="profile-card">
+          <div class="profile-identity">
+            <span class="profile-avatar-big" id="profile-avatar">👤</span>
+            <div>
+              <h2 id="profile-name-display" style="font-size: 20px;">User Account</h2>
+              <p id="profile-role-display" style="color: var(--secondary); font-size: 12px; margin-top: 2px;">Account Details</p>
+            </div>
+          </div>
+
+          <p id="doctor-storage-note" style="display:none;margin:0 0 18px;color:var(--secondary);font-size:12px;">
+            This prototype stores Doctor account and profile data in this browser only. It is not shared across devices, and professional credentials are not independently verified.
+          </p>
+
+          <form id="profile-form" novalidate>
+            <div class="profile-grid">
+              <div class="profile-field">
+                <label for="full-name">Full Name</label>
+                <input id="full-name" name="name" type="text" disabled required>
+              </div>
+              <div class="profile-field">
+                <label for="email-field">Email Address</label>
+                <input id="email-field" name="email" type="email" autocomplete="email" disabled>
+              </div>
+              <div class="profile-field" id="patient-id-group" style="display:none;">
+                <label for="patient-account-id">Patient ID</label>
+                <input id="patient-account-id" type="text" disabled readonly>
+              </div>
+
+              <!-- DOCTOR CLINICAL PROFILE FIELDS -->
+              <div class="profile-field profile-field--wide" id="doctor-account-id-group" style="display:none;">
+                <label for="doctor-account-id">Doctor ID</label>
+                <input id="doctor-account-id" type="text" disabled readonly>
+              </div>
+              <div class="profile-field" id="doc-specialization-group" style="display:none;">
+                <label for="doc-specialization">Specialization</label>
+                <input id="doc-specialization" name="specialization" type="text" placeholder="e.g. Cardiology" disabled>
+              </div>
+              <div class="profile-field" id="doc-qualification-group" style="display:none;">
+                <label for="doc-qualification">Qualifications</label>
+                <input id="doc-qualification" name="qualification" type="text" placeholder="e.g. MD, FACC" disabled>
+              </div>
+              <div class="profile-field" id="doc-phone-group" style="display:none;">
+                <label for="doc-phone">Phone Number</label>
+                <input id="doc-phone" name="phone" type="text" placeholder="e.g. +1 (555) 234-5678" disabled>
+              </div>
+              <div class="profile-field" id="doc-hospital-group" style="display:none;">
+                <label for="doc-hospital">Hospital / Clinic</label>
+                <input id="doc-hospital" name="hospitalClinic" type="text" placeholder="e.g. Metro General Hospital" disabled>
+              </div>
+              <div class="profile-field profile-field--wide" id="doc-id-group" style="display:none;">
+                <label for="doc-id">Professional Doctor ID</label>
+                <input id="doc-id" name="doctorId" type="text" placeholder="Your professional Doctor ID" disabled>
+              </div>
+              <div class="profile-field" id="doc-registration-group" style="display:none;">
+                <label for="doc-registration">Medical Registration Number</label>
+                <input id="doc-registration" name="medicalRegistrationNumber" type="text" placeholder="Registration number" disabled aria-describedby="doc-registration-note">
+                <small id="doc-registration-note" style="display:block;margin-top:5px;color:var(--secondary);font-size:11px;">Format is checked when entered. Credentials are not independently verified by MediAlert.</small>
+              </div>
+              <div class="profile-field" id="doc-experience-group" style="display:none;">
+                <label for="doc-experience">Years of Experience</label>
+                <input id="doc-experience" name="yearsExperience" type="number" min="0" max="80" step="1" placeholder="e.g. 8" disabled>
+              </div>
+              <div class="profile-field profile-field--wide" id="doc-bio-group" style="display:none;">
+                <label for="doc-bio">Professional Bio</label>
+                <textarea id="doc-bio" name="professionalBio" placeholder="Share a brief professional bio" disabled></textarea>
+              </div>
+
+              <!-- PATIENT CLINICAL FIELDS -->
+              <div class="profile-field" id="age-group">
+                <label for="age">Age</label>
+                <input id="age" name="age" type="number" min="0" max="130" disabled>
+              </div>
+              <div class="profile-field" id="gender-group">
+                <label for="gender">Gender</label>
+                <input id="gender" name="gender" type="text" disabled>
+              </div>
+              <div class="profile-field" id="blood-group-field">
+                <label for="blood-group">Blood Group</label>
+                <input id="blood-group" name="bloodGroup" type="text" disabled>
+              </div>
+              <div class="profile-field" id="emergency-contact-group">
+                <label for="emergency-contact">Emergency Contact</label>
+                <input id="emergency-contact" name="emergencyContact" type="text" disabled>
+              </div>
+              <div class="profile-field" id="primary-doctor-group" style="display:none;">
+                <label for="primary-doctor">Doctor Name</label>
+                <input id="primary-doctor" name="primaryDoctor" type="text" placeholder="No doctor connected" disabled>
+              </div>
+              <div class="profile-field profile-field--wide" id="address-group">
+                <label for="address">Residential Address</label>
+                <textarea id="address" name="address" disabled></textarea>
+              </div>
+              <div class="profile-field" id="conditions-group">
+                <label for="medical-conditions">Medical Conditions</label>
+                <textarea id="medical-conditions" name="medicalConditions" disabled></textarea>
+              </div>
+              <div class="profile-field" id="allergies-group">
+                <label for="allergies">Known Allergies</label>
+                <textarea id="allergies" name="allergies" disabled></textarea>
+              </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line);">
+              <button class="secondary-btn" id="edit-profile-btn" type="button">Edit Profile</button>
+              <button class="primary-btn" id="save-profile-btn" type="submit" disabled>Save Changes</button>
+            </div>
+            <p id="profile-status" style="font-size: 12px; margin-top: 10px; text-align: right;"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- CHANGE / ENABLE QUICK PIN MODAL -->
+  <div class="modal-backdrop" id="modal-pin-settings" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 id="pin-modal-heading">Update Quick PIN</h2>
+        <button class="modal-close-btn" type="button" data-close-modal="modal-pin-settings">&times;</button>
+      </div>
+      <form id="form-pin-settings">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="modal-new-pin">Enter 4–6 Digit PIN *</label>
+            <input id="modal-new-pin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • •" required style="letter-spacing:0.3em;text-align:center;font-size:18px;">
+          </div>
+          <div class="form-field">
+            <label for="modal-confirm-pin">Confirm New PIN *</label>
+            <input id="modal-confirm-pin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • •" required style="letter-spacing:0.3em;text-align:center;font-size:18px;">
+          </div>
+        </div>
+        <p id="modal-pin-error" style="color:var(--danger);font-size:11px;margin-top:8px;"></p>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" data-close-modal="modal-pin-settings">Cancel</button>
+          <button class="primary-btn" type="submit">Save PIN</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="userStorage.js"></script>
+  <script src="notificationService.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>
